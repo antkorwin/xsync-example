@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>com.github.antkorwin</groupId>
 			<artifactId>xsync</artifactId>
-			<version>0.4</version>
+			<version>0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
