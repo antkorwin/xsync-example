@@ -33,7 +33,7 @@ public class EvaluateSyncTest {
     private XSync<String> xSync;
 
     @Test
-    public void testWithXSync() throws InterruptedException {
+    public void evaluateWithXSync() throws InterruptedException {
         final Integer[] val1 = new Integer[1];
         final Integer[] val2 = new Integer[1];
 
@@ -50,7 +50,7 @@ public class EvaluateSyncTest {
     }
 
     @Test
-    public void testWithoutXSync() throws InterruptedException {
+    public void evaluateWithoutXSync() throws InterruptedException {
         final Integer[] val1 = new Integer[1];
         final Integer[] val2 = new Integer[1];
 
@@ -67,6 +67,7 @@ public class EvaluateSyncTest {
     }
 
     private Integer syncByStringMethod(String mutexKey){
+        // wrap non-sync method with xSync
         return xSync.evaluate(mutexKey,  () -> nonSyncMethod(mutexKey));
     }
 
