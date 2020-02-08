@@ -37,9 +37,7 @@ public class EvaluateSyncTest {
         final Integer[] val1 = new Integer[1];
         final Integer[] val2 = new Integer[1];
 
-        IntStream.range(0, ITERATION_CNT)
-                .boxed()
-                .parallel()
+        Iteration.getParallelIterations(ITERATION_CNT)
                 .forEach(i -> {
                     val1[0] = syncByStringMethod(KEY_1);
                     val2[0] = syncByStringMethod(KEY_2);
@@ -54,9 +52,7 @@ public class EvaluateSyncTest {
         final Integer[] val1 = new Integer[1];
         final Integer[] val2 = new Integer[1];
 
-        IntStream.range(0, ITERATION_CNT)
-                .boxed()
-                .parallel()
+        Iteration.getParallelIterations(ITERATION_CNT)
                 .forEach(i -> {
                     val1[0] = nonSyncMethod(KEY_1);
                     val2[0] = nonSyncMethod(KEY_2);
@@ -73,20 +69,17 @@ public class EvaluateSyncTest {
     private Integer nonSyncMethod(String mutexKey){
         if (mutexKey.equals(KEY_1)){
 
-            incrementIterations().forEach(i -> firstNonAtomicCounter.increment());
+            Iteration.getIterations(INCREMENT_ITERATION).forEach(i -> firstNonAtomicCounter.increment());
             return firstNonAtomicCounter.getValue();
 
         } else {
 
-            incrementIterations().forEach(i -> secondNonAtomicCounter.increment());
+            Iteration.getIterations(INCREMENT_ITERATION).forEach(i -> secondNonAtomicCounter.increment());
             return secondNonAtomicCounter.getValue();
 
         }
     }
 
-    private IntStream incrementIterations(){
-        return IntStream.range(0, INCREMENT_ITERATION);
-    }
 
     @TestConfiguration
     public static class TestConfig {

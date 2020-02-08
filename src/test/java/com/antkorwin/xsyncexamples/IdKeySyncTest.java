@@ -32,9 +32,7 @@ public class IdKeySyncTest {
         String idStr = UUID.randomUUID().toString();
         NonAtomicInt nonAtomicInt = new NonAtomicInt(0);
 
-        IntStream.range(0, ITERATION_CNT)
-                 .boxed()
-                 .parallel()
+        Iteration.getParallelIterations(ITERATION_CNT)
                  .forEach(i -> xSync.execute(UUID.fromString(idStr), nonAtomicInt::increment));
 
         Thread.sleep(1000L);

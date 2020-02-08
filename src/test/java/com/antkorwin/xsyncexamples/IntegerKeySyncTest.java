@@ -32,10 +32,8 @@ public class IntegerKeySyncTest {
         NonAtomicInt nonAtomicInt = new NonAtomicInt(0);
 
         // Act
-        IntStream.range(0, ITERATION_CNT)
-                 .boxed()
-                 .parallel()
-                 .forEach(i -> xSync.execute(123, nonAtomicInt::increment));
+        Iteration.getParallelIterations(ITERATION_CNT)
+                .forEach(i -> xSync.execute(123, nonAtomicInt::increment));
 
         Thread.sleep(1000);
 
