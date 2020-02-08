@@ -33,7 +33,7 @@ public class EvaluateSyncTest {
     private XSync<String> xSync;
 
     @Test
-    public void testWithXSync(){
+    public void testWithXSync() throws InterruptedException {
         final Integer[] val1 = new Integer[1];
         final Integer[] val2 = new Integer[1];
 
@@ -43,12 +43,14 @@ public class EvaluateSyncTest {
                     val2[0] = syncByStringMethod(KEY_2);
                 });
 
+        Thread.sleep(1000);
+
         Assertions.assertThat(val1[0]).isEqualTo(ITERATION_CNT * INCREMENT_ITERATION);
         Assertions.assertThat(val2[0]).isEqualTo(ITERATION_CNT * INCREMENT_ITERATION);
     }
 
     @Test
-    public void testWithoutXSync(){
+    public void testWithoutXSync() throws InterruptedException {
         final Integer[] val1 = new Integer[1];
         final Integer[] val2 = new Integer[1];
 
@@ -57,6 +59,8 @@ public class EvaluateSyncTest {
                     val1[0] = nonSyncMethod(KEY_1);
                     val2[0] = nonSyncMethod(KEY_2);
                 });
+
+        Thread.sleep(1000);
 
         Assertions.assertThat(val1[0]).isNotEqualTo(ITERATION_CNT * INCREMENT_ITERATION );
         Assertions.assertThat(val2[0]).isNotEqualTo(ITERATION_CNT * INCREMENT_ITERATION );
