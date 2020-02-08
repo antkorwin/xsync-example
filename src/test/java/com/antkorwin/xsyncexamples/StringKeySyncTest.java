@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class XsyncExamplesApplicationTests {
+public class StringKeySyncTest {
 
     private static final int ITERATION_CNT = 1000000;
 
@@ -30,9 +30,7 @@ public class XsyncExamplesApplicationTests {
         NonAtomicInt nonAtomicInt = new NonAtomicInt(0);
 
         // Act
-        IntStream.range(0, ITERATION_CNT)
-                 .boxed()
-                 .parallel()
+        Iteration.getParallelIterations(ITERATION_CNT)
                  .forEach(i -> xSync.execute("sync-key", nonAtomicInt::increment));
 
         Thread.sleep(1000);
