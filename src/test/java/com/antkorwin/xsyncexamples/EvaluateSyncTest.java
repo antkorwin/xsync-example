@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.stream.IntStream;
+
 
 /**
  * @author Arthur Kupriyanov on 08.02.2020
@@ -18,8 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class EvaluateSyncTest {
-    private static final int ITERATION_CNT = 100000;
-    private static final int INCREMENT_ITERATION = 10;
+    private static final int ITERATION_CNT = 10_000;
+    private static final int INCREMENT_ITERATION = 20;
 
     private final NonAtomicInt firstNonAtomicCounter = new NonAtomicInt(0);
     private final NonAtomicInt secondNonAtomicCounter = new NonAtomicInt(0);
@@ -32,34 +34,31 @@ public class EvaluateSyncTest {
     private XSync<String> xSync;
 
     @Test
-    public void evaluateWithXSync() throws InterruptedException {
+    public void evaluateWithXSync() {
         final Integer[] val1 = new Integer[1];
         final Integer[] val2 = new Integer[1];
 
-        Iteration.getParallelIterations(ITERATION_CNT)
-                .forEach(i -> {
+        StressTestIteration.getIterations(ITERATION_CNT).threads(8)
+                .run(() -> {
                     val1[0] = syncByStringMethod(KEY_1);
                     val2[0] = syncByStringMethod(KEY_2);
                 });
-
-        Thread.sleep(1000);
 
         Assertions.assertThat(val1[0]).isEqualTo(ITERATION_CNT * INCREMENT_ITERATION);
         Assertions.assertThat(val2[0]).isEqualTo(ITERATION_CNT * INCREMENT_ITERATION);
     }
 
     @Test
-    public void evaluateWithoutXSync() throws InterruptedException {
+    public void evaluateWithoutXSync() {
         final Integer[] val1 = new Integer[1];
         final Integer[] val2 = new Integer[1];
 
-        Iteration.getParallelIterations(ITERATION_CNT)
-                .forEach(i -> {
+        StressTestIteration.getIterations(ITERATION_CNT)
+                .threads(8)
+                .run(() -> {
                     val1[0] = nonSyncMethod(KEY_1);
                     val2[0] = nonSyncMethod(KEY_2);
                 });
-
-        Thread.sleep(1000);
 
         Assertions.assertThat(val1[0]).isNotEqualTo(ITERATION_CNT * INCREMENT_ITERATION );
         Assertions.assertThat(val2[0]).isNotEqualTo(ITERATION_CNT * INCREMENT_ITERATION );
@@ -73,12 +72,12 @@ public class EvaluateSyncTest {
     private Integer nonSyncMethod(String mutexKey){
         if (mutexKey.equals(KEY_1)){
 
-            Iteration.getIterations(INCREMENT_ITERATION).forEach(i -> firstNonAtomicCounter.increment());
+            IntStream.range(0, INCREMENT_ITERATION).forEach(i -> firstNonAtomicCounter.increment());
             return firstNonAtomicCounter.getValue();
 
         } else {
 
-            Iteration.getIterations(INCREMENT_ITERATION).forEach(i -> secondNonAtomicCounter.increment());
+            IntStream.range(0, INCREMENT_ITERATION).forEach(i -> secondNonAtomicCounter.increment());
             return secondNonAtomicCounter.getValue();
 
         }

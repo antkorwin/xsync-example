@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.stream.IntStream;
-
 /**
  * Created on 20.06.2018.
  *
@@ -20,7 +18,7 @@ import java.util.stream.IntStream;
 @RunWith(SpringRunner.class)
 public class IntegerKeySyncTest {
 
-    private static final int ITERATION_CNT = 100000;
+    private static final int ITERATION_CNT = 5000;
 
     @Autowired
     @Qualifier("intXSync")
@@ -32,8 +30,8 @@ public class IntegerKeySyncTest {
         NonAtomicInt nonAtomicInt = new NonAtomicInt(0);
 
         // Act
-        Iteration.getParallelIterations(ITERATION_CNT)
-                .forEach(i -> xSync.execute(123, nonAtomicInt::increment));
+        StressTestIteration.getIterations(ITERATION_CNT).threads(8)
+                .run(() -> xSync.execute(123, nonAtomicInt::increment));
 
         Thread.sleep(1000);
 
