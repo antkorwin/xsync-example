@@ -11,13 +11,11 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.stream.IntStream;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class XsyncExamplesApplicationTests {
+public class StringKeySyncTest {
 
-    private static final int ITERATION_CNT = 1000000;
+    private static final int ITERATION_CNT = 5000;
 
     @Autowired
     @Qualifier("stringXSync")
@@ -30,16 +28,15 @@ public class XsyncExamplesApplicationTests {
         NonAtomicInt nonAtomicInt = new NonAtomicInt(0);
 
         // Act
-        IntStream.range(0, ITERATION_CNT)
-                 .boxed()
-                 .parallel()
-                 .forEach(i -> xSync.execute("sync-key", nonAtomicInt::increment));
+        StressTestIteration.getIterations(ITERATION_CNT)
+                .threads(8)
+                .run(() -> xSync.execute("sync-key", nonAtomicInt::increment));
 
         Thread.sleep(1000);
 
         // Asserts
         Assertions.assertThat(nonAtomicInt.getValue())
-                  .isEqualTo(ITERATION_CNT);
+                .isEqualTo(ITERATION_CNT);
     }
 
     @TestConfiguration
