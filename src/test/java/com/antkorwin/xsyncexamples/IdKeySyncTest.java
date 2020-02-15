@@ -31,12 +31,13 @@ public class IdKeySyncTest {
         String idStr = UUID.randomUUID().toString();
         NonAtomicInt nonAtomicInt = new NonAtomicInt(0);
 
-        StressTestIteration.getIterations(ITERATION_CNT).threads(8)
-                 .run(() -> xSync.execute(UUID.fromString(idStr), nonAtomicInt::increment));
+        StressTestIteration.getIterations(ITERATION_CNT)
+                .threads(8)
+                .run(() -> xSync.execute(UUID.fromString(idStr), nonAtomicInt::increment));
 
         Thread.sleep(1000L);
 
         Assertions.assertThat(nonAtomicInt.getValue())
-                  .isEqualTo(ITERATION_CNT);
+                .isEqualTo(ITERATION_CNT);
     }
 }

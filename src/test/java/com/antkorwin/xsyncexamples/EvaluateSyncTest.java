@@ -38,7 +38,8 @@ public class EvaluateSyncTest {
         final Integer[] val1 = new Integer[1];
         final Integer[] val2 = new Integer[1];
 
-        StressTestIteration.getIterations(ITERATION_CNT).threads(8)
+        StressTestIteration.getIterations(ITERATION_CNT)
+                .threads(8)
                 .run(() -> {
                     val1[0] = syncByStringMethod(KEY_1);
                     val2[0] = syncByStringMethod(KEY_2);

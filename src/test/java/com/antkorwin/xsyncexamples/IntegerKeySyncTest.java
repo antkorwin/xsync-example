@@ -30,7 +30,8 @@ public class IntegerKeySyncTest {
         NonAtomicInt nonAtomicInt = new NonAtomicInt(0);
 
         // Act
-        StressTestIteration.getIterations(ITERATION_CNT).threads(8)
+        StressTestIteration.getIterations(ITERATION_CNT)
+                .threads(8)
                 .run(() -> xSync.execute(123, nonAtomicInt::increment));
 
         Thread.sleep(1000);
