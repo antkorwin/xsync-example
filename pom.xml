@@ -45,6 +45,13 @@
 			<artifactId>xsync</artifactId>
 			<version>1.2</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.jupiter-tools</groupId>
+			<artifactId>stress-test</artifactId>
+			<version>0.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
